@@ -7,6 +7,8 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
+import java.util.Random;
+
 @Component
 public class TelegramBot extends TelegramLongPollingBot {
 
@@ -29,19 +31,38 @@ public class TelegramBot extends TelegramLongPollingBot {
         if(update.hasMessage() && update.getMessage().hasText()){
             String messageText = update.getMessage().getText();
             long chatId = update.getMessage().getChatId();
-            switch (messageText){
+            if(messageText.toLowerCase().contains("монетку")||messageText.toLowerCase().contains("монетка")){
+                flipTheCoin(chatId);
+            } else if (messageText.toLowerCase().contains("/start")) {
+                startCommandReceived(chatId,update.getMessage().getChat().getFirstName());
+            }else{
+                sendMessage(chatId, "Такой команды еще не знаю.");
+            }
+            /*switch (messageText){
                 case "/start":
                     startCommandReceived(chatId,update.getMessage().getChat().getFirstName());
                     break;
+                case "Подбрось монетку":
+                    flipTheCoin(chatId);
+                    break;
                 default:
                     sendMessage(chatId, "Такой команды еще не знаю.");
-            }
-
+            }*/
         }
     }
     private void startCommandReceived(long chatId , String name){
         String response = "Начало положено, " + name + ".";
         sendMessage(chatId, response);
+    }
+    private void flipTheCoin(long chatId){
+        Random rand = new Random();
+        int num = rand.nextInt(2);
+        if(num==0){
+            sendMessage(chatId,"Орел");
+        }
+        else{
+            sendMessage(chatId, "Решка");
+        }
     }
     private void sendMessage(long chatId, String textToSend){
         SendMessage message = new SendMessage();
