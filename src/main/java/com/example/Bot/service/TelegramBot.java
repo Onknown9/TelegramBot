@@ -33,22 +33,27 @@ public class TelegramBot extends TelegramLongPollingBot {
             long chatId = update.getMessage().getChatId();
             if(messageText.toLowerCase().contains("монетку")||messageText.toLowerCase().contains("монетка")){
                 flipTheCoin(chatId);
-            } else if (messageText.toLowerCase().contains("/start")) {
+            }
+            else if (messageText.toLowerCase().contains("/start")) {
                 startCommandReceived(chatId,update.getMessage().getChat().getFirstName());
-            }else{
+            }
+            else if(messageText.toLowerCase().contains("погода")||messageText.toLowerCase().contains("прогноз")){
+                String s=messageText.toLowerCase();
+                weatherForecast(chatId,s);
+            }
+            else{
                 sendMessage(chatId, "Такой команды еще не знаю.");
             }
-            /*switch (messageText){
-                case "/start":
-                    startCommandReceived(chatId,update.getMessage().getChat().getFirstName());
-                    break;
-                case "Подбрось монетку":
-                    flipTheCoin(chatId);
-                    break;
-                default:
-                    sendMessage(chatId, "Такой команды еще не знаю.");
-            }*/
         }
+    }
+    private void weatherForecast(long chatId,String s){
+        s = s.replace("прогноз","");
+        s = s.replace("погода","");
+        s = s.replace(" в ","");
+        s = s.trim();
+        Weather weather = new Weather();
+        String response = weather.initialize(s);
+        sendMessage(chatId, response);
     }
     private void startCommandReceived(long chatId , String name){
         String response = "Начало положено, " + name + ".";
