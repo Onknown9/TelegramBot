@@ -41,10 +41,21 @@ public class TelegramBot extends TelegramLongPollingBot {
                 String s=messageText.toLowerCase();
                 weatherForecast(chatId,s);
             }
+            else if(messageText.toLowerCase().contains("криптовалюта")){
+                String s=messageText.toLowerCase();
+                getCrypto(chatId,s);
+            }
             else{
                 sendMessage(chatId, "Такой команды еще не знаю.");
             }
         }
+    }
+    private void getCrypto(long chatId, String s){
+        s = s.replace("криптовалюта","");
+        s = s.trim();
+        Crypto crypto = new Crypto();
+        String response = crypto.initializeCrypto(s);
+        sendMessage(chatId,response);
     }
     private void weatherForecast(long chatId,String s){
         s = s.replace("прогноз","");
@@ -52,7 +63,7 @@ public class TelegramBot extends TelegramLongPollingBot {
         s = s.replace(" в ","");
         s = s.trim();
         Weather weather = new Weather();
-        String response = weather.initialize(s);
+        String response = weather.initializeWeather(s);
         sendMessage(chatId, response);
     }
     private void startCommandReceived(long chatId , String name){
