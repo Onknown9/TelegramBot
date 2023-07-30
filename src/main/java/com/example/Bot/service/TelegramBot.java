@@ -41,9 +41,12 @@ public class TelegramBot extends TelegramLongPollingBot {
                 String s=messageText.toLowerCase();
                 weatherForecast(chatId,s);
             }
-            else if(messageText.toLowerCase().contains("криптовалюта")){
+            else if(messageText.toLowerCase().contains("криптовалюта")||messageText.toLowerCase().contains("валюта")||messageText.toLowerCase().contains("валюте")){
                 String s=messageText.toLowerCase();
                 getCrypto(chatId,s);
+            }
+            else if(messageText.toLowerCase().contains("список")&&messageText.toLowerCase().contains("криптовалют") || messageText.toLowerCase().contains("список")&&messageText.toLowerCase().contains("валют")){
+                getListOfCrypto(chatId);
             }
             else{
                 sendMessage(chatId, "Такой команды еще не знаю.");
@@ -51,11 +54,24 @@ public class TelegramBot extends TelegramLongPollingBot {
         }
     }
     private void getCrypto(long chatId, String s){
-        s = s.replace("криптовалюта","");
-        s = s.trim();
+        /*s = s.replace("криптовалюта","");
+        s = s.replace("валюта","");
+        s = s.replace("валюте","");
+        s = s.replace("о","");
+        s = s.replace("расскажи","");
+        s = s.replace("про","");
+        s = s.trim();*/
+        String[] strArray = s.split(" ");
+        String cryptoName = strArray[strArray.length-1];
         Crypto crypto = new Crypto();
-        String response = crypto.initializeCrypto(s);
+        String response = crypto.initializeCrypto(cryptoName);
         sendMessage(chatId,response);
+    }
+
+    private void getListOfCrypto(long chatId){
+        Crypto crypto = new Crypto();
+        String response = crypto.listOfCrypto();
+        sendMessage(chatId, response );
     }
     private void weatherForecast(long chatId,String s){
         s = s.replace("прогноз","");

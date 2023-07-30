@@ -22,8 +22,19 @@ public class Crypto {
         response = priceUsd + "\n" + changePercent;
         return response;
     }
+    public String listOfCrypto(){
+        String output = getUrlContent("https://api.coincap.io/v2/assets");
+        JSONArray dataArray = new JSONObject(output).getJSONArray("data");
+        StringBuilder currencyNames = new StringBuilder();
+        for (int i = 0; i < dataArray.length(); i++) {
+            JSONObject currencyData = dataArray.getJSONObject(i);
+            String name = currencyData.getString("name");
+            currencyNames.append(name).append("\n");
+        }
+        return currencyNames.toString();
+    }
     private static String getUrlContent(String urlAdress){
-        StringBuffer content = new StringBuffer();
+        StringBuilder content = new StringBuilder();
         try{
             URL url = new URL(urlAdress);
             URLConnection urlConnection = url.openConnection();
@@ -31,7 +42,7 @@ public class Crypto {
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
             String line;
             while((line = bufferedReader.readLine())!=null){
-                content.append(line+"\n");
+                content.append(line).append("\n");
             }
             bufferedReader.close();
         }catch (Exception e){
