@@ -1,9 +1,14 @@
 package com.example.Bot.service;
 
 import com.example.Bot.config.BotConfig;
+import com.example.Bot.model.User;
+import com.example.Bot.model.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
@@ -11,6 +16,8 @@ import java.util.Random;
 
 @Component
 public class TelegramBot extends TelegramLongPollingBot {
+    @Autowired
+    private UserRepository userRepository;
 
     final BotConfig config;
     public TelegramBot(BotConfig config){
@@ -35,6 +42,7 @@ public class TelegramBot extends TelegramLongPollingBot {
                 flipTheCoin(chatId);
             }
             else if (messageText.toLowerCase().contains("/start")) {
+                registerUser(update.getMessage());
                 startCommandReceived(chatId,update.getMessage().getChat().getFirstName());
             }
             else if(messageText.toLowerCase().contains("погода")||messageText.toLowerCase().contains("прогноз")||messageText.toLowerCase().contains("прогнозу")||messageText.toLowerCase().contains("погоде")){
@@ -51,6 +59,16 @@ public class TelegramBot extends TelegramLongPollingBot {
             else{
                 sendMessage(chatId, "Такой команды еще не знаю.");
             }
+        }
+    }
+    private void registerUser(Message msg){
+        if(userRepository.findById(msg.getChatId()).isEmpty()){
+            var chatId = msg.getChatId();
+            var chat = msg.getChat();
+            User user = new User();
+            user.setChatId(chatId);
+            user.setUserName(chat.getUserName());
+            userRepository.save(user);
         }
     }
     private void getCrypto(long chatId, String s){
@@ -109,10 +127,21 @@ public class TelegramBot extends TelegramLongPollingBot {
             throw new RuntimeException(e);
         }
     }
+    private void executeMessage(SendMessage message){
+        try {
+            execute(message);
+        } catch (TelegramApiException e) {
+            System.out.println("Error");
+        }
+    }
     private void prepareAndSendMessage(long chatId,String textToSend){
         SendMessage message = new SendMessage();
         message.setChatId(String.valueOf(chatId));
         message.setText((textToSend));
-        /*executeMessage(message);*/
+        executeMessage(message);
+    }
+    @Scheduled (cron = "0 15 * * * *")
+    private void sendScheduledMessage(){
+        prepareAndSendMessage(config.getOwnerId(), "Расписание работает");
     }
 }
