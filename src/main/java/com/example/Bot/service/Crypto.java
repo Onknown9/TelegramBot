@@ -14,13 +14,18 @@ public class Crypto {
     private String priceUsd;
     private String changePercent;
     public String initializeCrypto(String cryptoName) {
-        String output = getUrlContent("https://api.coincap.io/v2/assets/"+cryptoName);
-        JSONObject object = new JSONObject(output);
-        DecimalFormat decimalFormat = new DecimalFormat("0.00");
-        priceUsd = "Цена: " + decimalFormat.format(object.getJSONObject("data").getDouble("priceUsd")) + "$";
-        changePercent = "Рост за 24 часа: " + decimalFormat.format(object.getJSONObject("data").getDouble("changePercent24Hr")) + "%";
-        response = priceUsd + "\n" + changePercent;
-        return response;
+        try{
+            String output = getUrlContent("https://api.coincap.io/v2/assets/"+cryptoName);
+            JSONObject object = new JSONObject(output);
+            DecimalFormat decimalFormat = new DecimalFormat("0.00");
+            priceUsd = "Цена: " + decimalFormat.format(object.getJSONObject("data").getDouble("priceUsd")) + "$";
+            changePercent = "Рост за 24 часа: " + decimalFormat.format(object.getJSONObject("data").getDouble("changePercent24Hr")) + "%";
+            response = priceUsd + "\n" + changePercent;
+            return response;
+        }
+        catch (Exception e){
+            return "Неверный формат или такой криптовалюты нет.";
+        }
     }
     public String listOfCrypto(){
         String output = getUrlContent("https://api.coincap.io/v2/assets");

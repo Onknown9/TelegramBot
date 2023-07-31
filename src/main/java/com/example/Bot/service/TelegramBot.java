@@ -37,11 +37,11 @@ public class TelegramBot extends TelegramLongPollingBot {
             else if (messageText.toLowerCase().contains("/start")) {
                 startCommandReceived(chatId,update.getMessage().getChat().getFirstName());
             }
-            else if(messageText.toLowerCase().contains("погода")||messageText.toLowerCase().contains("прогноз")){
+            else if(messageText.toLowerCase().contains("погода")||messageText.toLowerCase().contains("прогноз")||messageText.toLowerCase().contains("прогнозу")||messageText.toLowerCase().contains("погоде")){
                 String s=messageText.toLowerCase();
                 weatherForecast(chatId,s);
             }
-            else if(messageText.toLowerCase().contains("криптовалюта")||messageText.toLowerCase().contains("валюта")||messageText.toLowerCase().contains("валюте")){
+            else if(messageText.toLowerCase().contains("криптовалюта")||messageText.toLowerCase().contains("валюта")||messageText.toLowerCase().contains("валюте")||messageText.toLowerCase().contains("валюту")){
                 String s=messageText.toLowerCase();
                 getCrypto(chatId,s);
             }
@@ -74,12 +74,14 @@ public class TelegramBot extends TelegramLongPollingBot {
         sendMessage(chatId, response );
     }
     private void weatherForecast(long chatId,String s){
-        s = s.replace("прогноз","");
+        /*s = s.replace("прогноз","");
         s = s.replace("погода","");
         s = s.replace(" в ","");
-        s = s.trim();
+        s = s.trim();*/
+        String[] strArray = s.split(" ");
+        String cityName = strArray[strArray.length-1];
         Weather weather = new Weather();
-        String response = weather.initializeWeather(s);
+        String response = weather.initializeWeather(cityName);
         sendMessage(chatId, response);
     }
     private void startCommandReceived(long chatId , String name){
@@ -106,6 +108,11 @@ public class TelegramBot extends TelegramLongPollingBot {
         catch(TelegramApiException e){
             throw new RuntimeException(e);
         }
-
+    }
+    private void prepareAndSendMessage(long chatId,String textToSend){
+        SendMessage message = new SendMessage();
+        message.setChatId(String.valueOf(chatId));
+        message.setText((textToSend));
+        /*executeMessage(message);*/
     }
 }

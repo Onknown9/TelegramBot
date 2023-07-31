@@ -18,17 +18,22 @@ public class Weather {
     private String response;
     private String general;
     public String initializeWeather(String city){
-        String output = getUrlContent("https://api.openweathermap.org/data/2.5/weather?q="+city+"&appid=4c4614e4a6f6015f4db106a89b8c1f3f&units=metric");
-        JSONObject object = new JSONObject(output);
-        JSONArray weatherArray = object.getJSONArray("weather");
-        JSONObject weatherObject = weatherArray.getJSONObject(0);
-        general="Погода: "+weatherObject.getString("main");
-        temp="Температура: "+object.getJSONObject("main").getDouble("temp");
-        temp_feels="Ощущается как: "+object.getJSONObject("main").getDouble("feels_like");
-        min_temp="Минимальная температура: "+object.getJSONObject("main").getDouble("temp_min");
-        max_temp="Максимальная температура: "+object.getJSONObject("main").getDouble("temp_max");
-        response=general+"\n"+temp+"\n"+temp_feels+"\n"+min_temp+"\n"+max_temp;
-        return response;
+        try{
+            String output = getUrlContent("https://api.openweathermap.org/data/2.5/weather?q="+city+"&appid=4c4614e4a6f6015f4db106a89b8c1f3f&units=metric");
+            JSONObject object = new JSONObject(output);
+            JSONArray weatherArray = object.getJSONArray("weather");
+            JSONObject weatherObject = weatherArray.getJSONObject(0);
+            general="Погода: "+weatherObject.getString("main");
+            temp="Температура: "+object.getJSONObject("main").getDouble("temp");
+            temp_feels="Ощущается как: "+object.getJSONObject("main").getDouble("feels_like");
+            min_temp="Минимальная температура: "+object.getJSONObject("main").getDouble("temp_min");
+            max_temp="Максимальная температура: "+object.getJSONObject("main").getDouble("temp_max");
+            response=general+"\n"+temp+"\n"+temp_feels+"\n"+min_temp+"\n"+max_temp;
+            return response;
+        }
+        catch(Exception e){
+            return "Неверный формат или такого города нет.";
+        }
     }
     private static String getUrlContent(String urlAdress){
         StringBuffer content = new StringBuffer();
