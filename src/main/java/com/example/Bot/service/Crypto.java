@@ -27,6 +27,21 @@ public class Crypto {
             return "Неверный формат или такой криптовалюты нет.";
         }
     }
+    public String listOfFavorites(){
+        String output = getUrlContent("https://api.coincap.io/v2/assets");
+        JSONArray dataArray = new JSONObject(output).getJSONArray("data");
+        StringBuilder currencyNames = new StringBuilder();
+        for (int i = 0; i < dataArray.length(); i++) {
+            JSONObject currencyData = dataArray.getJSONObject(i);
+            String name = currencyData.getString("name");
+            String id = currencyData.getString("id");
+            if(id.equals("binance-coin")||id.equals("bitcoin")){
+                currencyNames.append(name).append("\n").append(initializeCrypto(id)).append("\n");
+            }
+        }
+        System.out.println(currencyNames.toString());
+        return currencyNames.toString();
+    }
     public String listOfCrypto(){
         String output = getUrlContent("https://api.coincap.io/v2/assets");
         JSONArray dataArray = new JSONObject(output).getJSONArray("data");

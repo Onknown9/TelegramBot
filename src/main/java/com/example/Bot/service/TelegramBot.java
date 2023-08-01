@@ -72,13 +72,6 @@ public class TelegramBot extends TelegramLongPollingBot {
         }
     }
     private void getCrypto(long chatId, String s){
-        /*s = s.replace("криптовалюта","");
-        s = s.replace("валюта","");
-        s = s.replace("валюте","");
-        s = s.replace("о","");
-        s = s.replace("расскажи","");
-        s = s.replace("про","");
-        s = s.trim();*/
         String[] strArray = s.split(" ");
         String cryptoName = strArray[strArray.length-1];
         Crypto crypto = new Crypto();
@@ -92,10 +85,6 @@ public class TelegramBot extends TelegramLongPollingBot {
         sendMessage(chatId, response );
     }
     private void weatherForecast(long chatId,String s){
-        /*s = s.replace("прогноз","");
-        s = s.replace("погода","");
-        s = s.replace(" в ","");
-        s = s.trim();*/
         String[] strArray = s.split(" ");
         String cityName = strArray[strArray.length-1];
         Weather weather = new Weather();
@@ -140,8 +129,12 @@ public class TelegramBot extends TelegramLongPollingBot {
         message.setText((textToSend));
         executeMessage(message);
     }
-    @Scheduled (cron = "0 15 * * * *")
+    @Scheduled (cron = "0 0 10 * * *")
     private void sendScheduledMessage(){
-        prepareAndSendMessage(config.getOwnerId(), "Расписание работает");
+        Weather weather = new Weather();
+        Crypto crypto = new Crypto();
+        String weatherSchedule = "Погода Bodo \n"+weather.initializeWeather("Bodo");
+        prepareAndSendMessage(config.getOwnerId(),"Информация по криптовалютам:"+"\n"+ crypto.listOfFavorites());
+        prepareAndSendMessage(config.getOwnerId(),weatherSchedule);
     }
 }
