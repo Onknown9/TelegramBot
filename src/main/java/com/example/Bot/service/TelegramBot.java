@@ -7,11 +7,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
+import org.telegram.telegrambots.meta.api.methods.GetFile;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-import org.telegram.telegrambots.meta.api.objects.Message;
-import org.telegram.telegrambots.meta.api.objects.Update;
+import org.telegram.telegrambots.meta.api.objects.*;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
+import org.telegram.telegrambots.meta.exceptions.TelegramApiRequestException;
 
+import java.util.List;
 import java.util.Random;
 
 @Component
@@ -56,8 +58,74 @@ public class TelegramBot extends TelegramLongPollingBot {
             else if(messageText.toLowerCase().contains("список")&&messageText.toLowerCase().contains("криптовалют") || messageText.toLowerCase().contains("список")&&messageText.toLowerCase().contains("валют")){
                 getListOfCrypto(chatId);
             }
+            else if (messageText.toLowerCase().contains("команды")) {
+                sendMessage(chatId, "Список команд: \n узнать список криптовалют взятых из API: \"список\", \n узнать более детальную информацию о какой-либо валюте: \"валюта + *название валюты*\", \n узнать погоду нужного города: погода + *название населенного пункта*\"");
+            }
             else{
-                sendMessage(chatId, "Такой команды еще не знаю.");
+                sendMessage(chatId, "Такой команды еще не знаю. Что бы узнать список комманд введите: команды");
+            }
+        }
+
+        if (update.hasMessage() && update.getMessage().hasDocument()) {
+            long chatId = update.getMessage().getChatId();
+            Document document = update.getMessage().getDocument();
+            String fileId = document.getFileId();
+
+            // Create GetFile method and set the file ID
+            GetFile getFileMethod = new GetFile();
+            getFileMethod.setFileId(fileId);
+
+            try {
+                // Execute the GetFile method
+                File file = execute(getFileMethod);
+
+                // Download the file
+                java.io.File downloadedFile = downloadFile(file.getFilePath());
+
+                if (downloadedFile != null && downloadedFile.exists()) {
+                    // Process the document using TesseractService
+                    TesseractPDFService tesseractService = new TesseractPDFService();
+                    String extractedText = tesseractService.extractText(downloadedFile);
+
+                    // Send the extracted text back to the user
+                    sendMessage(chatId, extractedText);
+                } else {
+                    sendMessage(chatId, "Неудалось скачать файл.");
+                }
+            } catch (Exception e) {
+                if(e.getMessage().contains("message is too long")){
+                    sendMessage(chatId, "Слишком большой файл");
+                }
+                throw new RuntimeException(e);
+            }
+        }
+
+        if(update.hasMessage() && update.getMessage().hasPhoto()){
+            long chatId = update.getMessage().getChatId();
+            List<PhotoSize> photos = update.getMessage().getPhoto();
+            // Get the largest photo available
+            PhotoSize photo = photos.get(photos.size() - 1); // Get the last photo which is the largest
+            String fileId = photo.getFileId();
+            GetFile getFileMethod = new GetFile();
+            getFileMethod.setFileId(fileId);
+            try {
+                File file = execute(getFileMethod);
+                String filePath = file.getFilePath();
+
+                // Download the file
+                java.io.File downloadedFile = downloadFile(filePath);
+
+
+                TesseractService tesseractService = new TesseractService();
+                String extractedText = tesseractService.extractText(downloadedFile);
+
+                // Send the extracted text back to the user
+                sendMessage(chatId, extractedText);
+            } catch (TelegramApiException e) {
+                e.printStackTrace();
+                sendMessage(chatId, "Failed to process the image.");
+            } catch (Exception e) {
+                throw new RuntimeException(e);
             }
         }
     }
