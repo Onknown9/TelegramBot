@@ -51,7 +51,7 @@ public class TesseractPDFService implements ITesseract {
             ImageIO.write(image, "png", byteArrayOutputStream);
 
             ITesseract tessInstance = new TesseractPDFService();
-            tessInstance.setDatapath("src/main/resources/tessdata"); // Ensure this path is correct and points to the tessdata directory
+            tessInstance.setDatapath("src/main/resources/tesseractData"); // Ensure this path is correct and points to the tessdata directory
 
             String imageText;
             try {
