@@ -1,7 +1,12 @@
 # TelegramBot
-Telegram bot application. Made with help of Spring boot and API. 
-This application allows user to get:
--Weather forecast of any city user will input.(And some villages too)
--Needed info about any cryptocurrency user inputs(Price in $ and growth over 24 hours in %)
--It can send delayed messages at 10:00 am to owner with all described above information.
--Give list of all currencies that were returned by API so user can put correct name in search.
+Telegram bot application. It can be used as a personal assistant.
+It's functionality is quiet big.
+It allows user to:
+ -Find weather forecast of any city user will input.
+ -Give neccessary information on cryptocurrencies that were read by API (If user doesn't know what was read bot will tell list of commands user can use)
+ -Allows user to send images to bot which will be read by Tesseract OCR and if images contained text bot will return text of the image.
+ -Allows user to use bot as a search engine. (Just write whatever you want to know and bot will find information through bing engine and send back needed information from 1 link)
+If user doesn't know what bot can do or will put wrong input bot is able to tell what can he do.
+
+
+Project was made using API's, Tesseract OCR, Spring.
