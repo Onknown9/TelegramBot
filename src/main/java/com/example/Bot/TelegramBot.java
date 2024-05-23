@@ -1,8 +1,9 @@
-package com.example.Bot.service;
+package com.example.Bot;
 
 import com.example.Bot.config.BotConfig;
 import com.example.Bot.model.User;
 import com.example.Bot.model.UserRepository;
+import com.example.Bot.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -11,7 +12,6 @@ import org.telegram.telegrambots.meta.api.methods.GetFile;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.*;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
-import org.telegram.telegrambots.meta.exceptions.TelegramApiRequestException;
 
 import java.util.List;
 import java.util.Random;
@@ -47,6 +47,9 @@ public class TelegramBot extends TelegramLongPollingBot {
                 registerUser(update.getMessage());
                 startCommandReceived(chatId,update.getMessage().getChat().getFirstName());
             }
+            else if (messageText.toLowerCase().contains("о")||messageText.toLowerCase().contains("about")) {
+                sendMessage(chatId, scrape(String.valueOf(update.getMessage().getText())) );
+            }
             else if(messageText.toLowerCase().contains("погода")||messageText.toLowerCase().contains("прогноз")||messageText.toLowerCase().contains("прогнозу")||messageText.toLowerCase().contains("погоде")){
                 String s=messageText.toLowerCase();
                 weatherForecast(chatId,s);
@@ -62,7 +65,7 @@ public class TelegramBot extends TelegramLongPollingBot {
                 sendMessage(chatId, "Список команд: \n узнать список криптовалют взятых из API: \"список\", \n узнать более детальную информацию о какой-либо валюте: \"валюта + *название валюты*\", \n узнать погоду нужного города: погода + *название населенного пункта*\"");
             }
             else{
-                sendMessage(chatId, "Такой команды еще не знаю. Что бы узнать список комманд введите: команды");
+                sendMessage(chatId, "Такой команды еще не знаю. Что бы узнать список команд введите: команды");
             }
         }
 
@@ -128,6 +131,10 @@ public class TelegramBot extends TelegramLongPollingBot {
                 throw new RuntimeException(e);
             }
         }
+    }
+    private String scrape(String s){
+        Scraper scraper = new Scraper();
+        return scraper.scrapeFirstResult(s);
     }
     private void registerUser(Message msg){
         if(userRepository.findById(msg.getChatId()).isEmpty()){

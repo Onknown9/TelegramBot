@@ -14,8 +14,8 @@ public class TesseractService {
         try (InputStream inputStream = file.getInputStream()) {
             BufferedImage image = ImageIO.read(inputStream);
 
-            ITesseract tessInstance = new Tesseract();
-            tessInstance.setLanguage("rus");
+            Tesseract tessInstance = new Tesseract();
+            tessInstance.setLanguage("eng");
             tessInstance.setDatapath("src/main/resources/tesseractData"); // Ensure this path is correct and points to the tessdata directory
 
             return tessInstance.doOCR(image);

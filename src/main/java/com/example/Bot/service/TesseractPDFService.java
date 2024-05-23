@@ -52,7 +52,6 @@ public class TesseractPDFService implements ITesseract {
 
             ITesseract tessInstance = new TesseractPDFService();
             tessInstance.setDatapath("src/main/resources/tesseractData"); // Ensure this path is correct and points to the tessdata directory
-
             String imageText;
             try {
                 imageText = tessInstance.doOCR(ImageIO.read(new ByteArrayInputStream(byteArrayOutputStream.toByteArray())));
@@ -65,7 +64,6 @@ public class TesseractPDFService implements ITesseract {
 
         return imagesWithText;
     }
-
     @Override
     public String doOCR(File file) throws TesseractException {
         return null;
