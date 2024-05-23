@@ -134,7 +134,15 @@ public class TelegramBot extends TelegramLongPollingBot {
     }
     private String scrape(String s){
         Scraper scraper = new Scraper();
-        return scraper.scrapeFirstResult(s);
+        String scrapeResult = scraper.scrapeFirstResult(s);
+        StringBuilder builder = new StringBuilder();
+        if (scrapeResult.length()>4000){
+            for(int i=0; i<4000; i++){
+                builder.append(scrapeResult.charAt(i));
+            }
+            return builder.substring(0, builder.toString().lastIndexOf(".")).trim();
+        }
+        return scrapeResult;
     }
     private void registerUser(Message msg){
         if(userRepository.findById(msg.getChatId()).isEmpty()){

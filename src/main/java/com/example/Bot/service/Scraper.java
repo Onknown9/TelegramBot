@@ -19,27 +19,21 @@ public class Scraper {
 
     public static String scrapeFirstResult(String query) {
         try {
-            // Выполнение поиска в Bing
             String encodedQuery = URLEncoder.encode(query, StandardCharsets.UTF_8);
             String searchUrl = "https://www.bing.com/search?q=" + encodedQuery;
             String searchResultPage = getPageContent(searchUrl);
 
-            // Извлечение URL первого результата
             String firstResultUrl = extractFirstResultUrl(searchResultPage);
             if (firstResultUrl == null) {
                 return "Failed to find first result URL.";
             }
 
-            // Получение содержимого первого результата
             String firstResultPage = getPageContent(firstResultUrl);
 
-            // Извлечение HTML-тегов и их содержимого
             String extractedText = extractContentFromHtml(firstResultPage);
 
-            // Удаление HTML-тегов
             extractedText = removeHtmlTags(extractedText);
 
-            // Обрезаем текст, если он превышает 4000 символов
             if (extractedText.length() > 4000) {
                 extractedText = extractedText.substring(0, 4000);
             }
@@ -96,12 +90,10 @@ public class Scraper {
     }
 
     private static String extractFirstResultUrl(String html) {
-        // Ищем блок с результатами поиска
         int startMarkerIndex = html.indexOf("<ol id=\"b_results\"");
         if (startMarkerIndex == -1) {
             return null;
         }
-        // Ищем первую ссылку на результат поиска
         int urlStartIndex = html.indexOf("<a href=\"", startMarkerIndex);
         if (urlStartIndex == -1) {
             return null;
@@ -117,25 +109,20 @@ public class Scraper {
     private static String extractContentFromHtml(String html) {
         StringBuilder extractedContent = new StringBuilder();
 
-        // Указываем тег, содержимое которого мы хотим извлечь
         String tag = "p";
 
-        // Ищем все вхождения тега <p>
         int startIndex = html.indexOf("<" + tag + ">");
         while (startIndex != -1) {
-            // Находим индекс конца тега </p>
             int endIndex = html.indexOf("</" + tag + ">", startIndex);
             if (endIndex == -1) {
                 break;
             }
 
-            // Извлекаем содержимое тега и добавляем его к общему результату
             String content = html.substring(startIndex + ("<" + tag + ">").length(), endIndex).trim();
             if (!content.isEmpty()) {
                 extractedContent.append(content).append("\n");
             }
 
-            // Переходим к следующему вхождению тега <p>
             startIndex = html.indexOf("<" + tag + ">", endIndex);
         }
 
