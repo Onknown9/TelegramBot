@@ -47,7 +47,7 @@ public class TelegramBot extends TelegramLongPollingBot {
                 registerUser(update.getMessage());
                 startCommandReceived(chatId,update.getMessage().getChat().getFirstName());
             }
-            else if (messageText.toLowerCase().contains("о")||messageText.toLowerCase().contains("about")) {
+            else if (messageText.toLowerCase().contains("о ")||messageText.toLowerCase().contains("about")) {
                 sendMessage(chatId, scrape(String.valueOf(update.getMessage().getText())) );
             }
             else if(messageText.toLowerCase().contains("погода")||messageText.toLowerCase().contains("прогноз")||messageText.toLowerCase().contains("прогнозу")||messageText.toLowerCase().contains("погоде")){

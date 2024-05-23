@@ -43,11 +43,11 @@ public class Scraper {
             if (extractedText.length() > 4000) {
                 extractedText = extractedText.substring(0, 4000);
             }
-
-            return extractedText;
+            String beforeLastDot = extractedText.substring(0, extractedText.lastIndexOf(".")).trim();
+            return beforeLastDot + "\n Информация была взята из: " + firstResultUrl;
         } catch (Exception e) {
             e.printStackTrace();
-            return e.getMessage();
+            return "Ошибка ввода, измените запрос для корректной работы краулера";
         }
     }
 
