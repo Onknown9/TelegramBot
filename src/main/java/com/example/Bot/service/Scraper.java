@@ -25,7 +25,7 @@ public class Scraper {
 
             String firstResultUrl = extractFirstResultUrl(searchResultPage);
             if (firstResultUrl == null) {
-                return "Failed to find first result URL.";
+                return "Ошибка открытия страницы, измените запрос";
             }
 
             String firstResultPage = getPageContent(firstResultUrl);
