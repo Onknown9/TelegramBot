@@ -6,6 +6,8 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -39,6 +41,25 @@ public class Scraper {
             }
             String beforeLastDot = extractedText.substring(0, extractedText.lastIndexOf(".")).trim();
             return beforeLastDot + "\n Информация была взята из: " + firstResultUrl;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return scrapeMultipleSearchEngines(query);
+        }
+    }
+    private static String scrapeMultipleSearchEngines(String query) {
+        List<String> searchUrls = new ArrayList<>();
+        try {
+            String encodedQuery = URLEncoder.encode(query, StandardCharsets.UTF_8);
+            searchUrls.add("https://www.google.com/search?q=" + encodedQuery);
+            searchUrls.add("https://www.bing.com/search?q=" + encodedQuery);
+            searchUrls.add("https://search.yahoo.com/search?p=" + encodedQuery);
+            searchUrls.add("https://duckduckgo.com/?q=" + encodedQuery);
+
+            StringBuilder result = new StringBuilder("Не удалось получить результат, попробуйте следующие ссылки:\n");
+            for (String url : searchUrls) {
+                result.append(url).append("\n \n \n");
+            }
+            return result.toString();
         } catch (Exception e) {
             e.printStackTrace();
             return "Ошибка ввода, измените запрос для корректной работы краулера";
