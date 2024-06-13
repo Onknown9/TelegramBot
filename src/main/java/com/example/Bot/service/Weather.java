@@ -25,9 +25,9 @@ public class Weather {
             JSONObject weatherObject = weatherArray.getJSONObject(0);
             general="Погода: "+weatherObject.getString("main");
             temp="Температура: "+object.getJSONObject("main").getDouble("temp");
-            temp_feels="Ощущается как: "+object.getJSONObject("main").getDouble("feels_like");
-            min_temp="Минимальная температура: "+object.getJSONObject("main").getDouble("temp_min");
-            max_temp="Максимальная температура: "+object.getJSONObject("main").getDouble("temp_max");
+            temp_feels="Відчувається як: "+object.getJSONObject("main").getDouble("feels_like");
+            min_temp="Мінімальна температура: "+object.getJSONObject("main").getDouble("temp_min");
+            max_temp="Максимальна температура: "+object.getJSONObject("main").getDouble("temp_max");
             response=general+"\n"+temp+"\n"+temp_feels+"\n"+min_temp+"\n"+max_temp;
             return response;
         }

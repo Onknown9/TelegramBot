@@ -9,13 +9,13 @@ import org.springframework.mock.web.MockMultipartFile;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.*;
-public class TesseractService {
+public class TesseractRus {
     public String extractTextFromImage(MultipartFile file) throws IOException, TesseractException {
         try (InputStream inputStream = file.getInputStream()) {
             BufferedImage image = ImageIO.read(inputStream);
 
             Tesseract tessInstance = new Tesseract();
-            tessInstance.setLanguage("eng");
+            tessInstance.setLanguage("rus");
             tessInstance.setDatapath("src/main/resources/tesseractData"); // Ensure this path is correct and points to the tessdata directory
 
             return tessInstance.doOCR(image);
@@ -27,7 +27,7 @@ public class TesseractService {
             MultipartFile multipartFile = new MockMultipartFile(file.getName(), inputStream);
 
             // Perform OCR using TesseractService
-            TesseractService tesseractService = new TesseractService();
+            TesseractRus tesseractService = new TesseractRus();
             return tesseractService.extractTextFromImage(multipartFile);
         } catch (IOException e) {
             throw new Exception("Error processing file", e);

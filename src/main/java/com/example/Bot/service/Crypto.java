@@ -18,8 +18,8 @@ public class Crypto {
             String output = getUrlContent("https://api.coincap.io/v2/assets/"+cryptoName);
             JSONObject object = new JSONObject(output);
             DecimalFormat decimalFormat = new DecimalFormat("0.00");
-            priceUsd = "Цена: " + decimalFormat.format(object.getJSONObject("data").getDouble("priceUsd")) + "$";
-            changePercent = "Рост за 24 часа: " + decimalFormat.format(object.getJSONObject("data").getDouble("changePercent24Hr")) + "%";
+            priceUsd = "Ціна: " + decimalFormat.format(object.getJSONObject("data").getDouble("priceUsd")) + "$";
+            changePercent = "Рост за 24 години: " + decimalFormat.format(object.getJSONObject("data").getDouble("changePercent24Hr")) + "%";
             response = priceUsd + "\n" + changePercent;
             return response;
         }

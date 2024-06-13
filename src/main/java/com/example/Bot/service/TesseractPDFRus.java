@@ -15,7 +15,7 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TesseractPDFService implements ITesseract {
+public class TesseractPDFRus implements ITesseract {
     public String extractText(File file) throws Exception {
         try (InputStream inputStream = new FileInputStream(file)) {
             // Convert File to MultipartFile
@@ -50,7 +50,7 @@ public class TesseractPDFService implements ITesseract {
             ImageIO.write(image, "png", byteArrayOutputStream);
 
             ITesseract tessInstance = new TesseractPDFService();
-            tessInstance.setLanguage("eng");
+            tessInstance.setLanguage("rus");
             tessInstance.setDatapath("src/main/resources/tesseractData"); // Ensure this path is correct and points to the tessdata directory
             String imageText;
             try {
